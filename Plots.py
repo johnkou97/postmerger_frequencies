@@ -71,7 +71,7 @@ def analyze(rh,mass):
     #ampl=rhM
     #tim=time
 
-    tuk=signal.tukey(len(ampl))
+    tuk=signal.tukey(len(ampl),0.03)
     dat=ampl*tuk
 
     fq,fd=fre_do(tim,dat,mass)
@@ -264,6 +264,7 @@ for i in index:
     plt.xlabel('frequency (Hz)')
     plt.legend()
     plt.savefig('results/q1/linear/BAM:0'+BAM[i]+'.jpg')
+    plt.close()
 
 
 for i in index:
@@ -284,6 +285,7 @@ for i in index:
     plt.yscale('log')
     plt.ylim(10**(-6),10**(-1))
     plt.savefig('results/q1/log/BAM:0'+BAM[i]+'.jpg')
+    plt.close()
 
 #analysis for all cases
 f_2_a=np.zeros(len(BAM))
@@ -326,6 +328,7 @@ for i in range(len(BAM)):
     plt.xlabel('frequency (Hz)')
     plt.legend()
     plt.savefig('results/all_q/linear/BAM:0'+BAM[i]+'.jpg')
+    plt.close()
 
 
 for i in range(len(BAM)):
@@ -346,3 +349,4 @@ for i in range(len(BAM)):
     plt.yscale('log')
     plt.ylim(10**(-6),10**(-1))
     plt.savefig('results/all_q/log/BAM:0'+BAM[i]+'.jpg')
+    plt.close()
