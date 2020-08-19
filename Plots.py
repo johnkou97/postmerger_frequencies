@@ -82,7 +82,7 @@ def analyze(rh,mass):
     fig=plt.figure()
     plt.plot((fq*Frequency),fd)
     plt.xlim(0,5500)
-    return freq,amp,fig
+    return fq,fd,tim,dat,fig
 
 #metadata
 SLy=1
@@ -253,7 +253,7 @@ for i in index:
     file=h5py.File(name,'r')
     dat = list(file["/rh_22"])
     rh = np.array(file["/rh_22/%s" %dat[-1]])
-    freq2,amp2,fig1=analyze(rh,mas2[i])
+    freq,amp,time,dat,fig1=analyze(rh,mas2[i])
     ax=plt.subplot()
     ax.axvline(x=(f_p[i]*Mc[i])*1000,color='r',label='peak')
     ax.axvspan((f_p[i]*Mc[i])*1000-196, (f_p[i]*Mc[i])*1000+196, alpha=0.3, color='grey')
@@ -272,7 +272,7 @@ for i in index:
     file=h5py.File(name,'r')
     dat = list(file["/rh_22"])
     rh = np.array(file["/rh_22/%s" %dat[-1]])
-    freq2,amp2,fig1=analyze(rh,mas2[i])
+    freq,amp,time,dat,fig1=analyze(rh,mas2[i])
     ax=plt.subplot()
     ax.axvline(x=(f_p[i]*Mc[i])*1000,color='r',label='peak')
     ax.axvspan((f_p[i]*Mc[i])*1000-196, (f_p[i]*Mc[i])*1000+196, alpha=0.3, color='grey')
@@ -312,12 +312,28 @@ if os.path.exists('results/all_q/log'):
 else:
     os.mkdir('results/all_q/log')
 
+if os.path.exists('results/3fig'):
+    pass
+else:
+    os.mkdir('results/3fig')
+
+if os.path.exists('results/3fig/linear'):
+    pass
+else:
+    os.mkdir('results/3fig/linear')
+
+if os.path.exists('results/3fig/log'):
+    pass
+else:
+    os.mkdir('results/3fig/log')
+
+
 for i in range(len(BAM)):
     name = 'data/BAM:0'+BAM[i]+'.h5'
     file=h5py.File(name,'r')
     dat = list(file["/rh_22"])
     rh = np.array(file["/rh_22/%s" %dat[-1]])
-    freq2,amp2,fig2=analyze(rh,mas2[0])
+    freq,amp,time,dat,fig1=analyze(rh,mas2[i])
     ax=plt.subplot()
     ax.axvline(x=(f_p_a[i]*Mc[i])*1000,color='r',label='peak')
     ax.axvspan((f_p_a[i]*Mc[i])*1000-196, (f_p_a[i]*Mc[i])*1000+196, alpha=0.3, color='grey')
@@ -330,13 +346,29 @@ for i in range(len(BAM)):
     plt.savefig('results/all_q/linear/BAM:0'+BAM[i]+'.jpg')
     plt.close()
 
+    fig=plt.figure()
+    plt.subplot(212)
+    plt.plot((freq*Frequency),amp)
+    plt.xlim(0,5000)
+    plt.xlabel('Frequency (Hz)')
+    plt.legend(['Postmerger only'])
+    plt.subplot(222)
+    plt.plot(time,dat)
+    plt.title('Postmerger')
+    plt.subplot(221)
+    plt.plot(rh[:,0],rh[:,1])
+    plt.title('Time Domain')
+    plt.savefig('results/3fig/linear/BAM:0'+BAM[i]+'.jpg')
+    plt.close()
+
+
 
 for i in range(len(BAM)):
     name = 'data/BAM:0'+BAM[i]+'.h5'
     file=h5py.File(name,'r')
     dat = list(file["/rh_22"])
     rh = np.array(file["/rh_22/%s" %dat[-1]])
-    freq2,amp2,fig2=analyze(rh,mas2[0])
+    freq,amp,time,dat,fig1=analyze(rh,mas2[i])
     ax=plt.subplot()
     ax.axvline(x=(f_p_a[i]*Mc[i])*1000,color='r',label='peak')
     ax.axvspan((f_p_a[i]*Mc[i])*1000-196, (f_p_a[i]*Mc[i])*1000+196, alpha=0.3, color='grey')
@@ -349,4 +381,22 @@ for i in range(len(BAM)):
     plt.yscale('log')
     plt.ylim(10**(-6),10**(-1))
     plt.savefig('results/all_q/log/BAM:0'+BAM[i]+'.jpg')
+    plt.close()
+
+
+    fig=plt.figure()
+    plt.subplot(212)
+    plt.plot((freq*Frequency),amp)
+    plt.yscale('log')
+    plt.xlim(0,5000)
+    plt.ylim(10**(-6),1)
+    plt.xlabel('Frequency (Hz)')
+    plt.legend(['Postmerger only'])
+    plt.subplot(222)
+    plt.plot(time,dat)
+    plt.title('Postmerger')
+    plt.subplot(221)
+    plt.plot(rh[:,0],rh[:,1])
+    plt.title('Time Domain')
+    plt.savefig('results/3fig/log/BAM:0'+BAM[i]+'.jpg')
     plt.close()
