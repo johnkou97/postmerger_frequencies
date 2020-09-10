@@ -3,6 +3,7 @@ import os
 import numpy as np
 import math
 import scipy
+import pywt
 from scipy import signal
 import matplotlib.pyplot as plt
 from scipy.interpolate import CubicSpline as spline
@@ -327,6 +328,11 @@ if os.path.exists('results/3fig/log'):
 else:
     os.mkdir('results/3fig/log')
 
+if os.path.exists('results/spec'):
+    pass
+else:
+    os.mkdir('results/spec')
+
 
 for i in range(len(BAM)):
     name = 'data/BAM:0'+BAM[i]+'.h5'
@@ -359,6 +365,19 @@ for i in range(len(BAM)):
     plt.plot(rh[:,0],rh[:,1])
     plt.title('Time Domain')
     plt.savefig('results/3fig/linear/BAM:0'+BAM[i]+'.jpg')
+    plt.close()
+
+
+    fc = f_p_a[i]
+    dt=(time[1]-time[0])*Time*1000*mas2[i]
+    band = 2.5
+    wavelet = 'cmor'+str(band)+'-'+str(fc)
+    widths = fc/np.linspace(fc-1.0, fc+1.0, 400)/dt
+    cwtmatr, freqs = pywt.cwt(dat, widths, wavelet, dt)
+    power = abs(cwtmatr)
+    fig, ax = plt.subplots(figsize=(10, 6), dpi=150)
+    ax.pcolormesh(time, freqs, power,cmap='jet')
+    plt.savefig('results/spec/BAM:0'+BAM[i]+'.jpg')
     plt.close()
 
 
