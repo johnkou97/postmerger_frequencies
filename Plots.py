@@ -6,6 +6,9 @@ import scipy
 import pywt
 from scipy import signal
 import matplotlib.pyplot as plt
+import matplotlib.colors as colors
+from matplotlib.ticker import (MultipleLocator, FormatStrFormatter,
+                               AutoMinorLocator)
 from scipy.interpolate import CubicSpline as spline
 from scipy.fftpack import fft, fftshift ,ifft,rfft,fftfreq,rfftfreq
 c=2.9979e10
@@ -263,6 +266,8 @@ for i in index:
     ax.axvline((f_s[i]*Mc[i])*1000,color='orange',label='spiral')
     ax.axvspan((f_s[i]*Mc[i])*1000-286, (f_s[i]*Mc[i])*1000+286, alpha=0.3, color='cyan')
     plt.xlabel('frequency (Hz)')
+    ax.xaxis.set_major_locator(MultipleLocator(500))
+    ax.xaxis.set_minor_locator(MultipleLocator(100))
     plt.legend()
     plt.savefig('results/q1/linear/BAM:0'+BAM[i]+'.jpg')
     plt.close()
@@ -282,6 +287,8 @@ for i in index:
     ax.axvline((f_s[i]*Mc[i])*1000,color='orange',label='spiral')
     ax.axvspan((f_s[i]*Mc[i])*1000-286, (f_s[i]*Mc[i])*1000+286, alpha=0.3, color='cyan')
     plt.xlabel('frequency (Hz)')
+    ax.xaxis.set_major_locator(MultipleLocator(500))
+    ax.xaxis.set_minor_locator(MultipleLocator(100))
     plt.legend()
     plt.yscale('log')
     plt.ylim(10**(-6),10**(-1))
@@ -333,6 +340,16 @@ if os.path.exists('results/spec'):
 else:
     os.mkdir('results/spec')
 
+if os.path.exists('results/spec/linear'):
+    pass
+else:
+    os.mkdir('results/spec/linear')
+
+if os.path.exists('results/spec/log'):
+    pass
+else:
+    os.mkdir('results/spec/log')
+
 
 for i in range(len(BAM)):
     name = 'data/BAM:0'+BAM[i]+'.h5'
@@ -348,6 +365,8 @@ for i in range(len(BAM)):
     ax.axvline((f_s_a[i]*Mc[i])*1000,color='orange',label='spiral')
     ax.axvspan((f_s_a[i]*Mc[i])*1000-286, (f_s_a[i]*Mc[i])*1000+286, alpha=0.3, color='cyan')
     plt.xlabel('frequency (Hz)')
+    ax.xaxis.set_major_locator(MultipleLocator(500))
+    ax.xaxis.set_minor_locator(MultipleLocator(100))
     plt.legend()
     plt.savefig('results/all_q/linear/BAM:0'+BAM[i]+'.jpg')
     plt.close()
@@ -359,25 +378,39 @@ for i in range(len(BAM)):
     plt.xlabel('Frequency (Hz)')
     plt.legend(['Postmerger only'])
     plt.subplot(222)
-    plt.plot(time,dat)
+    plt.plot(time*Time*1000-time[0]*Time*1000,dat)
     plt.title('Postmerger')
     plt.subplot(221)
-    plt.plot(rh[:,0],rh[:,1])
+    plt.plot(rh[:,0]*Time*1000,rh[:,1])
     plt.title('Time Domain')
     plt.savefig('results/3fig/linear/BAM:0'+BAM[i]+'.jpg')
     plt.close()
 
 
-    fc = f_p_a[i]
+    fc = 3
     dt=(time[1]-time[0])*Time*1000*mas2[i]
     band = 2.5
     wavelet = 'cmor'+str(band)+'-'+str(fc)
-    widths = fc/np.linspace(fc-1.0, fc+1.0, 400)/dt
+    widths = fc/np.linspace(fc-2.0, fc+2.0, 400)/dt
     cwtmatr, freqs = pywt.cwt(dat, widths, wavelet, dt)
     power = abs(cwtmatr)
+
     fig, ax = plt.subplots(figsize=(10, 6), dpi=150)
-    ax.pcolormesh(time, freqs, power,cmap='jet')
-    plt.savefig('results/spec/BAM:0'+BAM[i]+'.jpg')
+    ax.pcolormesh(time*Time*1000-time[0]*Time*1000, freqs, power,cmap='jet')
+    ax.xaxis.set_major_locator(MultipleLocator(1))
+    ax.xaxis.set_minor_locator(MultipleLocator(.2))
+    ax.yaxis.set_major_locator(MultipleLocator(.5))
+    ax.yaxis.set_minor_locator(MultipleLocator(.1))
+    plt.savefig('results/spec/linear/BAM:0'+BAM[i]+'.jpg')
+    plt.close()
+
+    fig, ax = plt.subplots(figsize=(10, 6), dpi=150)
+    ax.pcolormesh(time*Time*1000-time[0]*Time*1000, freqs, power,norm=colors.LogNorm(0.005,np.amax(power)),cmap='jet')
+    ax.xaxis.set_major_locator(MultipleLocator(1))
+    ax.xaxis.set_minor_locator(MultipleLocator(.2))
+    ax.yaxis.set_major_locator(MultipleLocator(.5))
+    ax.yaxis.set_minor_locator(MultipleLocator(.1))
+    plt.savefig('results/spec/log/BAM:0'+BAM[i]+'.jpg')
     plt.close()
 
 
@@ -396,6 +429,8 @@ for i in range(len(BAM)):
     ax.axvline((f_s_a[i]*Mc[i])*1000,color='orange',label='spiral')
     ax.axvspan((f_s_a[i]*Mc[i])*1000-286, (f_s_a[i]*Mc[i])*1000+286, alpha=0.3, color='cyan')
     plt.xlabel('frequency (Hz)')
+    ax.xaxis.set_major_locator(MultipleLocator(500))
+    ax.xaxis.set_minor_locator(MultipleLocator(100))
     plt.legend()
     plt.yscale('log')
     plt.ylim(10**(-6),10**(-1))
@@ -412,10 +447,10 @@ for i in range(len(BAM)):
     plt.xlabel('Frequency (Hz)')
     plt.legend(['Postmerger only'])
     plt.subplot(222)
-    plt.plot(time,dat)
+    plt.plot(time*Time*1000-time[0]*Time*1000,dat)
     plt.title('Postmerger')
     plt.subplot(221)
-    plt.plot(rh[:,0],rh[:,1])
+    plt.plot(rh[:,0]*Time*1000,rh[:,1])
     plt.title('Time Domain')
     plt.savefig('results/3fig/log/BAM:0'+BAM[i]+'.jpg')
     plt.close()
