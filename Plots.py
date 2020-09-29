@@ -301,7 +301,7 @@ f_s_a=np.zeros(len(BAM))
 f_p_a=np.zeros(len(BAM))
 for i in range(len(BAM)):
     f_2_a[i]=f20_a(Mc[i],r68[i,0])
-    f_p_a[i]=fpeak_a(Mc[i],r68[i,0])
+    f_p_a[i]=fpeak_a(Mc[i],r68[i,1])
     f_s_a[i]=fspir_a(Mc[i],r68[i,1])
 
 
@@ -397,6 +397,8 @@ for i in range(len(BAM)):
 
     fig, ax = plt.subplots(figsize=(10, 6), dpi=150)
     ax.pcolormesh(time*Time*1000-time[0]*Time*1000, freqs, power,cmap='jet')
+    plt.xlabel('Time(ms)')
+    plt.ylabel('Frequency(Hz)')
     ax.xaxis.set_major_locator(MultipleLocator(1))
     ax.xaxis.set_minor_locator(MultipleLocator(.2))
     ax.yaxis.set_major_locator(MultipleLocator(.5))
@@ -406,6 +408,8 @@ for i in range(len(BAM)):
 
     fig, ax = plt.subplots(figsize=(10, 6), dpi=150)
     ax.pcolormesh(time*Time*1000-time[0]*Time*1000, freqs, power,norm=colors.LogNorm(0.005,np.amax(power)),cmap='jet')
+    plt.xlabel('Time(ms)')
+    plt.ylabel('Frequency(Hz)')
     ax.xaxis.set_major_locator(MultipleLocator(1))
     ax.xaxis.set_minor_locator(MultipleLocator(.2))
     ax.yaxis.set_major_locator(MultipleLocator(.5))
