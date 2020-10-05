@@ -52,11 +52,8 @@ for m in range(0,2):
             name = 'BAM:0%s%s%s:R01.tar' %(m,k,j)
             try:
                 file=tar.open(name)
-               # print('bam')
                 file.extractall()
-               # print('yeah')
                 shutil.copy('Public/BAM:0{0}{1}{2}/R01/metadata.txt' .format(m,k,j),'metadata/BAM:0{0}{1}{2}.txt' .format(m,k,j))
-               # print('lol')
             except OSError:
                 pass
 
@@ -67,7 +64,6 @@ for m in range(0,2):
             try:
 
                 shutil.copy('Public/BAM:0{0}{1}{2}/R01/data.h5' .format(m,k,j),'data/BAM:0{0}{1}{2}.h5' .format(m,k,j))
-               # print('lol')
             except OSError:
                 pass
 
@@ -77,11 +73,8 @@ for m in range(0,4):
             name = 'THC:00%s%s:R01.tar' %(m,k)
             try:
                 file=tar.open(name)
-               # print('bam')
                 file.extractall()
-               # print('yeah')
                 shutil.copy('Public/THC:00{0}{1}/R01/metadata.txt' .format(m,k),'metadata/THC:00{0}{1}.txt' .format(m,k))
-               # print('lol')
             except OSError:
                 pass
 
@@ -91,7 +84,6 @@ for m in range(0,4):
             name = 'THC:00%s%s:R01.tar' %(m,k)
             try:
                 shutil.copy('Public/THC:00{0}{1}/R01/data.h5' .format(m,k),'data/THC:00{0}{1}.h5' .format(m,k))
-               # print('lol')
             except OSError:
                 pass
 
